@@ -89,6 +89,21 @@ def add_password():
     print("Password added successfully!")
 
 
+def view_passwords():
+    if not login():
+        return
+    cursor.execute("SELECT * FROM passwords")
+    passwords = cursor.fetchall()
+    for password in passwords:
+        website = password[1]
+        username = password[2]
+        encrypted_password = password[3]
+        decrypted_password = cipher_suite.decrypt(encrypted_password.encode()).decode()
+        print(
+            f"ID: {password[0]}, Website: {password[1]}, Username: {username}, Password: {decrypted_password}"
+        )
+
+
 while True:
     print("\nPassword Manager:")
     print("\t1. Register")
