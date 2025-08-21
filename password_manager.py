@@ -104,6 +104,15 @@ def view_passwords():
         )
 
 
+def delete_password():
+    if not login():
+        return
+    password_id = input("Enter the password ID to delete: ")
+    cursor.execute("DELETE FROM passwords WHERE id=?", (password_id,))
+    conn.commit()
+    print("Password deleted!")
+
+
 while True:
     print("\nPassword Manager:")
     print("\t1. Register")
