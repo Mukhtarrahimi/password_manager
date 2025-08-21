@@ -68,6 +68,27 @@ def generate_strong_password(length=12):
     return strong_password
 
 
+def add_password():
+    if not login():
+        return
+    website = input("Website or Service: ")
+    username = input("Username: ")
+    print("Do you want to generate a strong password for this service?(y/n): ")
+    generate_option = input()
+    if generate_option.lower() == "y":
+        password = generate_strong_password()
+        print(f"Your password is {password}")
+    else:
+        password = getpass.getpass("Password: ")
+    encrypted_password = cipher_suite.encrypt(password.encode()).decode()
+    cursor.execute(
+        "INSERT INTO passwords (website ,username, password) VALUES (?, ?, ?)",
+        (website, username, encrypted_password),
+    )
+    conn.commit()
+    print("Password added successfully!")
+
+
 while True:
     print("\nPassword Manager:")
     print("\t1. Register")
