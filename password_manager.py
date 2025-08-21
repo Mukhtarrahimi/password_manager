@@ -8,9 +8,9 @@ encryption_key = Fernet.generate_key()
 cipher_suite = Fernet(encryption_key)
 
 conn = sqlite3.connect("passwords.db")
-c = conn.cursor()
+cursor = conn.cursor()
 
-c.execute('''
+cursor.execute('''
            CREATE TABLE IF NOT EXISTS passwords
            (id INTEGER PRIMARY KEY AUTOINCREMENT,
            website TEXT NOT NULL,
@@ -21,7 +21,7 @@ c.execute('''
 
 conn.commit()
 
-c.execute('''
+cursor.execute('''
            CREATE TABLE IF NOT EXISTS users
            (id INTEGER PRIMARY KEY AUTOINCREMENT,
            username TEXT NOT NULL,
@@ -30,6 +30,19 @@ c.execute('''
            ''')
 
 conn.commit()
+
+
+def register_user():
+    username = input("Enter your username: ")
+    password = getpass.getpass("Enter your password: ")
+    encrypted_password = cipher_suite.encrypt(password.encode()).decode()
+    cursor.execute(
+        "INSERT INTO users (username, password) VALUES (?, ?)",
+        (username, encrypted_password),
+    )
+    conn.commit()
+    print("User registration successful!")
+
 
 while True:
     print("\nPassword Manager:")
