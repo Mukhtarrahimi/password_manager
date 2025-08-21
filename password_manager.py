@@ -62,6 +62,12 @@ def login():
     return False
 
 
+def generate_strong_password(length=12):
+    characters = string.ascii_letters + string.digits + "!@#$%^&*()_+<>?"
+    strong_password = "".join(secrets.choice(characters) for _ in range(length))
+    return strong_password
+
+
 while True:
     print("\nPassword Manager:")
     print("\t1. Register")
