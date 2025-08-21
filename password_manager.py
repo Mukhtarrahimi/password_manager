@@ -30,3 +30,12 @@ c.execute('''
            ''')
 
 conn.commit()
+
+while True:
+    print("\nPassword Manager:")
+    print("\t1. Register")
+    print("\t2. Change password")
+    print("\t3. Add password")
+    print("\t4. View passwords")
+    print("\t5. Delete password")
+    print("\t6. Exit")
