@@ -4,7 +4,8 @@ import secrets
 import string
 from cryptography.fernet import Fernet
 
-encryption_key = Fernet.generate_key()
+encryption_key = b"Ke3NG7IWYBOdv42RPxPRhdQcK0WRVY-cGnGvpHyTVvM="
+
 cipher_suite = Fernet(encryption_key)
 
 conn = sqlite3.connect("passwords.db")
