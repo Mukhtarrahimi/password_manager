@@ -4,31 +4,34 @@ import secrets
 import string
 from cryptography.fernet import Fernet
 
+# encryption_key = Fernet.generate_key()
 encryption_key = b"Ke3NG7IWYBOdv42RPxPRhdQcK0WRVY-cGnGvpHyTVvM="
-
 cipher_suite = Fernet(encryption_key)
 
-conn = sqlite3.connect("passwords.db")
+conn = sqlite3.connect("passwd_manager.db")
 cursor = conn.cursor()
-
-cursor.execute('''
-           CREATE TABLE IF NOT EXISTS passwords
-           (id INTEGER PRIMARY KEY AUTOINCREMENT,
-           website TEXT NOT NULL,
-           username TEXT NOT NULL,
-           password TEXT NOT NULL
-           )
-           ''')
+cursor.execute(
+    """
+	CREATE TABLE IF NOT EXISTS passwords(
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	website TEXT NOT NULL,
+	username TEXT NOT NULL,
+	password TEXT NOT NULL
+	)
+"""
+)
 
 conn.commit()
 
-cursor.execute('''
-           CREATE TABLE IF NOT EXISTS users
-           (id INTEGER PRIMARY KEY AUTOINCREMENT,
-           username TEXT NOT NULL,
-           password TEXT NOT NULL
-           )
-           ''')
+cursor.execute(
+    """
+	CREATE TABLE IF NOT EXISTS users(
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	username TEXT NOT NULL,
+	password TEXT NOT NULL
+	)
+"""
+)
 
 conn.commit()
 
@@ -67,6 +70,23 @@ def generate_strong_password(length=12):
     characters = string.ascii_letters + string.digits + "!@#$%^&*()_+<>?"
     strong_password = "".join(secrets.choice(characters) for _ in range(length))
     return strong_password
+
+
+def change_password():
+    if not login():
+        return
+    new_password = getpass.getpass(
+        "Enter your password (or leave blank to generate strong password): "
+    )
+    if not new_password:
+        new_password = generate_strong_password()
+        print(f"Your new password is {new_password}")
+    encrypted_password = cipher_suite.encrypt(new_password.encode()).decode()
+    cursor.execute(
+        "UPDATE users SET password=? WHERE username=?", (encrypted_password, username)
+    )
+    conn.commit()
+    print("Your new password changed successfully!")
 
 
 def add_password():
