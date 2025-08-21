@@ -44,6 +44,24 @@ def register_user():
     print("User registration successful!")
 
 
+def login():
+    global username
+    username = input("Enter your username: ")
+    password = getpass.getpass("Enter your password: ")
+
+    cursor.execute("SELECT * FROM users WHERE username=?", (username,))
+    user = cursor.fetchone()
+
+    if user:
+        stored_password = user[2]
+        decrypted_password = cipher_suite.decrypt(stored_password.encode()).decode()
+        if password == decrypted_password:
+            print("Login successful!")
+            return True
+    print("Login failed. Please try again.")
+    return False
+
+
 while True:
     print("\nPassword Manager:")
     print("\t1. Register")
